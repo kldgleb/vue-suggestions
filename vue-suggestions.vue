@@ -1,7 +1,6 @@
 <template>
   <input type="text" v-model="value">
 </template>
-
 <script>
   import $ from 'jquery';
   import 'suggestions-jquery';
@@ -11,7 +10,7 @@
       model: {
         required: true
       },
-      coordinates: {},
+      location: {},
       options: {
         type: Object,
         default: {
@@ -23,7 +22,7 @@
     data() {
       return {
         value: '',
-        coords: {
+        location: {
           lat: '',
           lon: ''
         },
@@ -40,7 +39,7 @@
     watch: {
       coords: {
         handler() {
-          this.$emit('update:coordinates', this.coords);
+          this.$emit('update:location', this.location);
         },
         deep: true
       },
@@ -67,8 +66,8 @@
       onSelect(suggestion) {
         this.value = suggestion.value;
         const { geo_lat, geo_lon } = suggestion.data;
-        this.coords.lat = geo_lat;
-        this.coords.lon = geo_lon;
+        this.location.lat = geo_lat;
+        this.location.lon = geo_lon;
       }
     }
   };
