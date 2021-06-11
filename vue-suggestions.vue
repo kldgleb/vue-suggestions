@@ -67,8 +67,8 @@
       onSelect(suggestion) {
         this.value = suggestion.value;
         const { geo_lat, geo_lon } = suggestion.data;
-        this.coords.latitude = geo_lat;
-        this.coords.longitude = geo_lon;
+        this.coords.lat = geo_lat;
+        this.coords.lon = geo_lon;
       }
     }
   };
