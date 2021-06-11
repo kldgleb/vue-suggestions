@@ -24,8 +24,8 @@
       return {
         value: '',
         coords: {
-          latitude: '',
-          longitude: ''
+          lat: '',
+          lon: ''
         },
       }
     },
