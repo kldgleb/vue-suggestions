@@ -37,7 +37,7 @@
       this.destroySuggestion();
     },
     watch: {
-      coords: {
+      location: {
         handler() {
           this.$emit('update:location', this.location);
         },
