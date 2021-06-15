@@ -11,6 +11,7 @@
         required: true
       },
       location: {},
+      kladr_id: 'default',
       options: {
         type: Object,
         default: {
@@ -26,6 +27,7 @@
           lat: '',
           lon: ''
         },
+        kladr_id: '',
       }
     },
     mounted() {
@@ -42,6 +44,9 @@
           this.$emit('update:location', this.location);
         },
         deep: true
+      },
+      kladr_id() {
+        this.$emit('update:kladr_id', this.kladr_id);
       },
       value() {
         this.$emit('update:model', this.value);
@@ -68,6 +73,8 @@
         const { geo_lat, geo_lon } = suggestion.data;
         this.location.lat = geo_lat;
         this.location.lon = geo_lon;
+        const { kladr_id } = suggestion.data;
+        this.kladr_id = kladr_id
       }
     }
   };
