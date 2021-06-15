@@ -11,7 +11,7 @@
         required: true
       },
       location: {},
-      kladr_id: 'default',
+      kladr_id: 0,
       options: {
         type: Object,
         default: {
@@ -27,7 +27,7 @@
           lat: '',
           lon: ''
         },
-        kladr_id: '',
+        kladr_id: 0,
       }
     },
     mounted() {
