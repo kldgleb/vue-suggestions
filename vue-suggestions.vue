@@ -4,6 +4,7 @@
 <script>
   import $ from 'jquery';
   import 'suggestions-jquery';
+  import axios from 'axios';
 
   export default {
     props: {
@@ -11,6 +12,7 @@
         required: true
       },
       location: {},
+      oldLocation:{},
       kladr_id: 0,
       options: {
         type: Object,
@@ -53,6 +55,10 @@
       },
       model() {
         this.value = this.model;
+      },
+      oldLocation: function(newVa) {
+          this.location = newVal
+          this.geolocate()
       }
     },
     methods: {
@@ -70,11 +76,31 @@
       },
       onSelect(suggestion) {
         this.value = suggestion.value;
-        const { geo_lat, geo_lon } = suggestion.data;
+        const { geo_lat, geo_lon, kladr_id } = suggestion.data;
         this.location.lat = geo_lat;
         this.location.lon = geo_lon;
-        const { kladr_id } = suggestion.data;
-        this.kladr_id = kladr_id
+        this.kladr_id = kladr_id;
+      },
+      geolocate() {
+        var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
+        var token = this.options.token;
+        var query = this.location;
+
+        var options = {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": "Token " + token
+            },
+            body: JSON.stringify(query)
+        }
+
+        fetch(url, options)
+        .then(response => response.text())
+        .then(result => this.onSelect(JSON.parse(result).suggestions[0]))
+        .catch(error => console.log("error", error));
       }
     }
   };
