@@ -56,7 +56,7 @@
       model() {
         this.value = this.model;
       },
-      oldLocation: function(newVa) {
+      oldLocation: function(newVal) {
           this.location = newVal
           this.geolocate()
       }
