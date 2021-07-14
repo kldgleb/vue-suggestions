@@ -4,7 +4,6 @@
 <script>
   import $ from 'jquery';
   import 'suggestions-jquery';
-  import axios from 'axios';
 
   export default {
     props: {
