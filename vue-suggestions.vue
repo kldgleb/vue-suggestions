@@ -104,7 +104,7 @@
           let resKladr = JSON.parse(result).suggestions[0].data.kladr_id; 
           let resArray = JSON.parse(result).suggestions;
           resArray.forEach(element => {
-            if(element.data.value === address) {
+            if(element.value === address) {
               let resLat = element.data.geo_lat; 
               let resLon = element.data.geo_lon; 
               let resKladr = element.data.kladr_id;   
