@@ -57,7 +57,6 @@
       },
       oldLocation: function(newVal) {
           this.location = newVal
-          console.log("bd location: ", newVal)
           this.geolocate()
       }
     },
@@ -75,7 +74,6 @@
         plugin.dispose();
       },
       onSelect(suggestion) {
-        this.value = suggestion.value;
         this.getCoords(suggestion.value)
       },
       getCoords(address) {
@@ -102,14 +100,20 @@
           let resLat = JSON.parse(result).suggestions[0].data.geo_lat; 
           let resLon = JSON.parse(result).suggestions[0].data.geo_lon; 
           let resKladr = JSON.parse(result).suggestions[0].data.kladr_id; 
+          let resVal = JSON.parse(result).suggestions[0].value; 
           let resArray = JSON.parse(result).suggestions;
-          resArray.forEach(element => {
-            if(element.value === address) {
-              let resLat = element.data.geo_lat; 
-              let resLon = element.data.geo_lon; 
-              let resKladr = element.data.kladr_id;   
+            console.log("resArray: ", resArray.length, resArray) 
+          for (let i = resArray.length-1; i >= 0; i--) {
+            let element = resArray[i];
+
+            if(element.value.toLowerCase() === address.toLowerCase()) {
+              resLat = element.data.geo_lat;
+              resLon = element.data.geo_lon;
+              resKladr = element.data.kladr_id;
+              resVal = element.value;
             }
-          });
+          }
+          this.value = resVal;
           this.location.lat = resLat; 
           this.location.lon =resLon; 
           this.kladr_id = resKladr; 
@@ -137,15 +141,16 @@
         .then(result => {
           let resArray = JSON.parse(result).suggestions;
           let toOnSelect = JSON.parse(result).suggestions[0];
-          resArray.forEach(element => {
+          for (let i = resArray.length-1; i >= 0; i--) {
+            let element = resArray[i];
             if(element.data.geo_lat === this.location.lat && element.data.geo_lon === this.location.lon) {
               toOnSelect = element
             }
-          });
+          }
           this.value = toOnSelect.value;          
           this.location.lat = toOnSelect.data.geo_lat;          
           this.location.lon = toOnSelect.data.geo_lon;          
-          this.kladr_id = toOnSelect.data.kladr_id; 
+          this.kladr_id = toOnSelect.data.kladr_id;
           }
         )
         .catch(error => console.log("error", error));
