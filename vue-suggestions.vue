@@ -57,6 +57,7 @@
       },
       oldLocation: function(newVal) {
           this.location = newVal
+          console.log("bd location: ", newVal)
           this.geolocate()
       }
     },
@@ -75,15 +76,51 @@
       },
       onSelect(suggestion) {
         this.value = suggestion.value;
-        const { geo_lat, geo_lon, kladr_id } = suggestion.data;
-        this.location.lat = geo_lat;
-        this.location.lon = geo_lon;
-        this.kladr_id = kladr_id;
+        this.getCoords(suggestion.value)
+      },
+      getCoords(address) {
+        var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
+        var token = this.options.token;
+        var body = {
+          query: address
+        };
+
+        var options = {
+          method: "POST",
+          mode: "cors",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "Token " + token
+          },
+          body: JSON.stringify(body)
+        }
+        
+        fetch(url, options)
+        .then( response => response.text())
+        .then( result => {
+          let resLat = JSON.parse(result).suggestions[0].data.geo_lat; 
+          let resLon = JSON.parse(result).suggestions[0].data.geo_lon; 
+          let resKladr = JSON.parse(result).suggestions[0].data.kladr_id; 
+          let resArray = JSON.parse(result).suggestions;
+          resArray.forEach(element => {
+            if(element.data.value === address) {
+              let resLat = element.data.geo_lat; 
+              let resLon = element.data.geo_lon; 
+              let resKladr = element.data.kladr_id;   
+            }
+          });
+          this.location.lat = resLat; 
+          this.location.lon =resLon; 
+          this.kladr_id = resKladr; 
+        })
+        .catch(error => console.log("error", error));
+
       },
       geolocate() {
         var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
         var token = this.options.token;
-        var query = this.location;
+        let body = JSON.stringify(this.location);
 
         var options = {
             method: "POST",
@@ -93,12 +130,24 @@
                 "Accept": "application/json",
                 "Authorization": "Token " + token
             },
-            body: JSON.stringify(query)
+            body: body 
         }
-
         fetch(url, options)
         .then(response => response.text())
-        .then(result => this.onSelect(JSON.parse(result).suggestions[0]))
+        .then(result => {
+          let resArray = JSON.parse(result).suggestions;
+          let toOnSelect = JSON.parse(result).suggestions[0];
+          resArray.forEach(element => {
+            if(element.data.geo_lat === this.location.lat && element.data.geo_lon === this.location.lon) {
+              toOnSelect = element
+            }
+          });
+          this.value = toOnSelect.value;          
+          this.location.lat = toOnSelect.data.geo_lat;          
+          this.location.lon = toOnSelect.data.geo_lon;          
+          this.kladr_id = toOnSelect.data.kladr_id; 
+          }
+        )
         .catch(error => console.log("error", error));
       }
     }
